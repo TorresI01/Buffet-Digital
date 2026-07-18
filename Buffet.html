@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Buffet Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="icon" type="image/png" href="Gemini_Generated_Image_fyyoo7fyyoo7fyyo.png">
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      text-align: center;
+      background-color: #F8F9FA;
+      color: #1A1A1A;
+      padding-top: 70px;
+    }
+
+    /* BARRA SUPERIOR */
+    .barra-superior {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 70px;
+      background-color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+    .bloque-izquierdo { display: flex; align-items: center; gap: 20px; }
+    .brand-name { font-size: 22px; font-weight: 800; color: #FF0000; margin: 0; cursor: pointer; }
+    .selector-ubicacion { display: flex; flex-direction: column; text-align: left; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: background 0.2s; }
+    .selector-ubicacion:hover { background: #F5F5F5; }
+    .ubicacion-label { font-size: 11px; color: #777777; font-weight: 600; text-transform: uppercase; }
+    .ubicacion-actual { font-size: 14px; font-weight: 700; color: #1A1A1A; }
+    .contenedor-buscador { flex-grow: 1; max-width: 450px; margin: 0 20px; }
+    .input-buscador { width: 100%; padding: 10px 16px; border: 1px solid #E0E0E0; background-color: #F8F9FA; border-radius: 20px; font-size: 14px; box-sizing: border-box; transition: all 0.2s; }
+    .input-buscador:focus { outline: none; border-color: #FF0000; background-color: #FFFFFF; }
+    .bloque-derecho { display: flex; align-items: center; gap: 15px; }
+    .boton-carrito { background: #F8F9FA; border: 1px solid #E0E0E0; padding: 10px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+    .boton-carrito:hover { background: #EEEEEE; }
+    .boton-user-trigger { background: #FF0000; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 2px 8px rgba(255,0,0,0.15); transition: all 0.2s; }
+    .boton-user-trigger:hover { background: #D60000; }
+
+    /* BOTONES ROJOS */
+    .boton { margin: 15px 5px; padding: 16px 40px; font-size: 16px; background: #FF0000; color: #FFFFFF; border: none; border-radius: 25px; cursor: pointer; transition: all 0.2s ease; font-weight: 600; box-shadow: 0 4px 12px rgba(255,0,0,0.2); }
+    .boton:hover { background: #D60000; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(255,0,0,0.3); }
+
+    /* PORTADA */
+    .portada { height: calc(100vh - 70px); background: linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.95)), url("https://images.unsplash.com/photo-1504674900247-0877df9cc836") center/cover no-repeat; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 0 20px; }
+    .titulo { font-size: 52px; font-weight: 800; color: #1A1A1A; margin: 0; letter-spacing: -1px; }
+    .subtitulo { color: #666666; margin-top: 10px; margin-bottom: 30px; font-size: 18px; font-weight: 400; }
+
+    /* CATEGORÍAS */
+    .seccion-categorias { display: none; padding: 40px 20px; max-width: 1200px; margin: 0 auto; }
+    .seccion-categorias h1, .menu h1 { color: #1A1A1A; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 5px; }
+    .contenedor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin: 35px auto; }
+    .tarjeta-categoria { position: relative; height: 160px; border-radius: 16px; display: flex; justify-content: flex-start; align-items: flex-end; overflow: hidden; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.06); transition: transform 0.2s ease, box-shadow 0.2s ease; border: 1px solid #EEEEEE; }
+    .tarjeta-categoria::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 60%); z-index: 1; }
+    .tarjeta-categoria:hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+    .tarjeta-categoria span { position: relative; z-index: 2; color: #FFFFFF; font-size: 18px; font-weight: 700; margin: 15px; }
+    .img-asiatico { background: url("https://images.unsplash.com/photo-1553621042-f6e147245754") center/cover; }
+    .img-oriental { background: url("https://images.unsplash.com/photo-1546069901-ba9599a7e63c") center/cover; }
+    .img-europeo { background: url("https://images.unsplash.com/photo-1525755662778-989d0524087e") center/cover; }
+    .img-latino { background: url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092") center/cover; }
+    .img-rapido { background: url("https://images.unsplash.com/photo-1568901346375-23c9450c58cd") center/cover; }
+    .img-vegetariano { background: url("https://images.unsplash.com/photo-1512621776951-a57141f2eefd") center/cover; }
+    .img-vegano { background: url("https://images.unsplash.com/photo-1498837167922-ddd27525d352") center/cover; }
+
+    /* LISTADO DE PLATOS */
+    .menu { display: none; padding: 40px 20px; }
+    .categoria { display: none; margin: 20px auto; padding: 25px; border-radius: 16px; max-width: 600px; background: #FFFFFF; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #EDEDED; }
+    h2 { color: #1A1A1A; margin-bottom: 25px; font-size: 22px; font-weight: 700; text-align: left; }
+
+    /* FILA DE PLATO CLICKEABLE */
+    .fila-plato {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0;
+      padding: 14px 0;
+      border-bottom: 1px solid #F3F3F3;
+      font-size: 15px;
+      color: #333333;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .fila-plato:last-child { border-bottom: none; }
+    .fila-plato:hover { background: #FFF5F5; padding-left: 8px; padding-right: 8px; margin: 0 -8px; }
+    .fila-plato:hover .nombre-plato { color: #FF0000; }
+    .nombre-plato { font-weight: 500; max-width: 75%; transition: color 0.15s; }
+    .precio-plato { font-weight: 600; color: #1A1A1A; background: #F5F5F5; padding: 6px 12px; border-radius: 12px; font-size: 14px; white-space: nowrap; }
+    .icono-ver { font-size: 12px; color: #BBBBBB; margin-left: 6px; }
+
+    /* =========================================
+       PANTALLA DETALLE DEL PLATO
+       ========================================= */
+    .pantalla-detalle {
+      display: none;
+      padding: 30px 20px 60px;
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .btn-volver-detalle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      color: #666;
+      padding: 0;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .btn-volver-detalle:hover { color: #FF0000; }
+
+    .detalle-imagen {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      background: #EEEEEE;
+    }
+
+    .detalle-encabezado {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .detalle-nombre {
+      font-size: 26px;
+      font-weight: 800;
+      color: #1A1A1A;
+      margin: 0;
+    }
+
+    .detalle-precio-base {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FF0000;
+      white-space: nowrap;
+      margin-left: 16px;
+    }
+
+    .detalle-descripcion {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    /* Ingredientes base */
+    .bloque-ingredientes {
+      background: #FAFAFA;
+      border: 1px solid #EEEEEE;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .bloque-titulo {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #999;
+      margin-bottom: 14px;
+    }
+    .tags-ingredientes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag-ingrediente {
+      background: #FFFFFF;
+      border: 1px solid #E0E0E0;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    /* Extras */
+    .bloque-extras {
+      background: #FFFFFF;
+      border: 1px solid #EEEEEE;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+
+    .extra-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #F5F5F5;
+      gap: 10px;
+    }
+    .extra-item:last-child { border-bottom: none; }
+
+    .extra-izq {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Imagen del extra */
+    .extra-img {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #F0F0F0;
+      border: 1px solid #EEEEEE;
+    }
+
+    /* Checkbox custom */
+    .extra-check {
+      width: 22px; height: 22px;
+      border: 2px solid #DDDDDD;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+    .extra-check.activo {
+      background: #FF0000;
+      border-color: #FF0000;
+    }
+    .extra-check.activo::after { content: "✓"; color: white; font-size: 13px; font-weight: 700; }
+
+    .extra-info { display: flex; flex-direction: column; min-width: 0; }
+    .extra-nombre { font-size: 14px; font-weight: 600; color: #1A1A1A; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .extra-desc { font-size: 12px; color: #999; margin-top: 1px; }
+
+    .extra-precio {
+      font-size: 14px;
+      font-weight: 700;
+      color: #FF0000;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Barra inferior fija: cantidad + agregar */
+    .barra-agregar {
+      position: fixed;
+      bottom: 0; left: 0;
+      width: 100%;
+      background: #FFFFFF;
+      border-top: 1px solid #EEEEEE;
+      padding: 14px 20px;
+      box-sizing: border-box;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 900;
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+    }
+    .barra-agregar.visible { display: flex; }
+
+    .control-cantidad {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1px solid #E0E0E0;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .btn-cantidad {
+      background: #F8F9FA;
+      border: none;
+      width: 38px; height: 38px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #333;
+      transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-cantidad:hover { background: #EEEEEE; }
+    .txt-cantidad { font-size: 16px; font-weight: 700; padding: 0 16px; min-width: 20px; text-align: center; }
+
+    .btn-agregar-carrito {
+      flex-grow: 1;
+      background: #FF0000;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 20px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.2s;
+      box-shadow: 0 4px 12px rgba(255,0,0,0.2);
+    }
+    .btn-agregar-carrito:hover { background: #D60000; }
+    .total-carrito { opacity: 0.9; font-weight: 600; }
+
+    /* MODALES */
+    .menu-usuario-dropdown { position: relative; }
+    .dropdown-contenido { display: none; position: absolute; right: 0; background-color: #FFFFFF; min-width: 180px; box-shadow: 0px 8px 24px rgba(0,0,0,0.1); border-radius: 12px; margin-top: 8px; overflow: hidden; z-index: 1051; border: 1px solid #EEEEEE; }
+    .dropdown-contenido a { color: #333333; padding: 12px 16px; text-decoration: none; display: block; text-align: left; font-size: 14px; cursor: pointer; }
+    .dropdown-contenido a:hover { background-color: #F8F9FA; color: #FF0000; }
+    .mostrar { display: block !important; }
+    .fondo-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 2000; }
+    .modal-contenido { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #FFFFFF; padding: 32px; border-radius: 20px; width: 320px; color: #1A1A1A; box-shadow: 0 15px 40px rgba(0,0,0,0.15); }
+    .modal-contenido h3 { margin-top: 0; font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+    .modal-contenido input { width: 92%; padding: 12px; margin: 8px 0; background: #F8F9FA; border: 1px solid #E0E0E0; border-radius: 10px; font-size: 14px; }
+    .modal-contenido input:focus { border-color: #FF0000; outline: none; background: #FFFFFF; }
+    .boton-bloque { width: 100%; padding: 14px; background: #FF0000; color: #FFFFFF; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 15px; margin-top: 15px; }
+    .boton-bloque:hover { background: #D60000; }
+    .cerrar-x { position: absolute; top: 15px; right: 20px; cursor: pointer; color: #999999; font-size: 22px; }
+    .cerrar-x:hover { color: #1A1A1A; }
+    .texto-cambio { font-size: 13px; color: #666666; margin-top: 20px; }
+    .texto-cambio span { color: #FF0000; cursor: pointer; font-weight: 600; }
+    .perfil-info { text-align: left; margin: 20px 0; background: #F8F9FA; padding: 15px; border-radius: 12px; }
+    .perfil-info p { border: none; padding: 4px 0; justify-content: flex-start; gap: 5px; display:flex; }
+
+    p { display: flex; justify-content: space-between; align-items: center; margin: 0; padding: 16px 0; border-bottom: 1px solid #F3F3F3; font-size: 15px; color: #333333; text-align: left; }
+    p:last-child { border-bottom: none; }
+
+    /* =========================================
+       PANTALLA DE RESULTADOS DE BÚSQUEDA
+       ========================================= */
+    .pantalla-busqueda {
+      display: none;
+      padding: 30px 20px 60px;
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .busqueda-header {
+      margin-bottom: 24px;
+    }
+    .busqueda-titulo {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1A1A1A;
+      margin: 0 0 4px 0;
+    }
+    .busqueda-subtitulo {
+      font-size: 14px;
+      color: #999;
+    }
+    .busqueda-query {
+      color: #FF0000;
+      font-weight: 700;
+    }
+
+    .seccion-resultado {
+      margin-bottom: 28px;
+    }
+    .seccion-resultado-titulo {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #AAAAAA;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #EEEEEE;
+    }
+
+    /* Tarjeta de categoría en resultados */
+    .resultado-categoria {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: #FFFFFF;
+      border: 1px solid #EEEEEE;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .resultado-categoria:hover {
+      border-color: #FF0000;
+      box-shadow: 0 4px 16px rgba(255,0,0,0.08);
+      transform: translateY(-1px);
+    }
+    .resultado-cat-imagen {
+      width: 54px;
+      height: 54px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #EEEEEE;
+    }
+    .resultado-cat-info { flex-grow: 1; }
+    .resultado-cat-nombre { font-size: 16px; font-weight: 700; color: #1A1A1A; }
+    .resultado-cat-sub { font-size: 13px; color: #999; margin-top: 2px; }
+    .resultado-cat-flecha { font-size: 18px; color: #CCCCCC; }
+
+    /* Fila de plato en resultados */
+    .resultado-plato {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: #FFFFFF;
+      border: 1px solid #EEEEEE;
+      border-radius: 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .resultado-plato:hover {
+      border-color: #FF0000;
+      box-shadow: 0 4px 16px rgba(255,0,0,0.08);
+      transform: translateY(-1px);
+    }
+    .resultado-plato-izq { display: flex; flex-direction: column; gap: 3px; }
+    .resultado-plato-nombre { font-size: 15px; font-weight: 600; color: #1A1A1A; }
+    .resultado-plato-cat {
+      font-size: 12px;
+      color: #FF0000;
+      font-weight: 600;
+      background: #FFF0F0;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .resultado-plato-precio { font-size: 15px; font-weight: 700; color: #1A1A1A; white-space: nowrap; }
+
+    .sin-resultados {
+      text-align: center;
+      padding: 50px 20px;
+      color: #AAAAAA;
+    }
+    .sin-resultados .emoji-vacio { font-size: 48px; margin-bottom: 12px; }
+    .sin-resultados p { display: block; border: none; padding: 0; font-size: 15px; }
+
+    /* Resaltado de texto coincidente */
+    mark {
+      background: #FFE8E8;
+      color: #FF0000;
+      border-radius: 3px;
+      padding: 0 2px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- BARRA SUPERIOR -->
+<div class="barra-superior">
+  <div class="bloque-izquierdo">
+    <h1 class="brand-name" onclick="location.reload()">Buffet Digital</h1>
+    <div class="selector-ubicacion" onclick="abrirModal('modalUbicacion')">
+      <span class="ubicacion-label">Entregar en 📍</span>
+      <span id="txtUbicacion" class="ubicacion-actual">Medellín, Envigado</span>
+    </div>
+  </div>
+  <div class="contenedor-buscador">
+    <input type="text" id="inputBuscador" class="input-buscador" placeholder="Busca comida, platos o categorías..." oninput="buscar(this.value)" autocomplete="off">
+  </div>
+  <div class="bloque-derecho">
+    <button class="boton-carrito" onclick="verCarrito()">
+      🛒 <span id="txtCarrito">Carrito (0)</span>
+    </button>
+    <div class="menu-usuario-dropdown">
+      <button id="btnAuthTrigger" class="boton-user-trigger" onclick="gestionarClicAuth()">Ingresar 👤</button>
+      <div id="dropdownUsuario" class="dropdown-contenido">
+        <a onclick="abrirPerfil()">Mi Perfil 📋</a>
+        <a onclick="cerrarSesion()">Cerrar Sesión 🚪</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DIRECCIÓN -->
+<div id="modalUbicacion" class="fondo-modal">
+  <div class="modal-contenido">
+    <span class="cerrar-x" onclick="cerrarModal('modalUbicacion')">&times;</span>
+    <h3>Ingresa tu dirección</h3>
+    <p style="border:none; padding:0; color:#666; font-size:13px; margin-bottom:15px;">Introduce los detalles de tu ubicación exacta para el envío.</p>
+    <input type="text" id="inputCiudad" placeholder="Ej: Medellín, Envigado" value="Medellín, Envigado">
+    <input type="text" id="inputDireccion" placeholder="Ej: Calle 37 Sur #43A-12, Apto 502">
+    <button class="boton-bloque" onclick="guardarUbicacion()">Confirmar Dirección</button>
+  </div>
+</div>
+
+<!-- MODAL: AUTH -->
+<div id="modalAuth" class="fondo-modal">
+  <div class="modal-contenido">
+    <span class="cerrar-x" onclick="cerrarModal('modalAuth')">&times;</span>
+    <div id="vistaLogin">
+      <h3>Iniciar Sesión</h3>
+      <input type="email" id="loginCorreo" placeholder="Correo electrónico">
+      <input type="password" id="loginPass" placeholder="Contraseña">
+      <button class="boton-bloque" onclick="procesarLogin()">Ingresar</button>
+      <p class="texto-cambio" style="border:none; padding:0;">¿Eres nuevo? <span onclick="cambiarVistaAuth('registro')">Regístrate aquí</span></p>
+    </div>
+    <div id="vistaRegistro" style="display: none;">
+      <h3>Crear Cuenta</h3>
+      <input type="text" id="regNombre" placeholder="Nombre">
+      <input type="email" id="regCorreo" placeholder="Correo electrónico">
+      <input type="password" id="regPass" placeholder="Contraseña">
+      <button class="boton-bloque" onclick="procesarRegistro()">Crear Cuenta</button>
+      <p class="texto-cambio" style="border:none; padding:0;">¿Ya tienes cuenta? <span onclick="cambiarVistaAuth('login')">Inicia sesión</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PERFIL -->
+<div id="modalPerfil" class="fondo-modal">
+  <div class="modal-contenido">
+    <span class="cerrar-x" onclick="cerrarModal('modalPerfil')">&times;</span>
+    <h3>Mi Perfil</h3>
+    <div class="perfil-info">
+      <p><strong>Nombre:</strong> <span id="perfilNombre">-</span></p>
+      <p><strong>Correo:</strong> <span id="perfilCorreo">-</span></p>
+      <p><strong>Nivel:</strong> <span style="color:#FF0000; font-weight:600;">Cliente VIP ⭐</span></p>
+    </div>
+    <button class="boton-bloque" onclick="cerrarModal('modalPerfil')">Entendido</button>
+  </div>
+</div>
+
+<!-- MODAL: CARRITO -->
+<div id="modalCarrito" class="fondo-modal">
+  <div class="modal-contenido" style="width:360px; max-width:90vw; max-height:80vh; overflow-y:auto;">
+    <span class="cerrar-x" onclick="cerrarModal('modalCarrito')">&times;</span>
+    <h3>🛒 Tu Carrito</h3>
+    <div id="listaCarrito"></div>
+    <div id="totalCarritoFinal" style="font-size:18px; font-weight:800; color:#FF0000; margin-top:16px; text-align:right;"></div>
+    <button class="boton-bloque" onclick="cerrarModal('modalCarrito')">Seguir comprando</button>
+    <button class="boton-bloque" style="background:#1A1A1A; margin-top:8px;" onclick="alert('¡Pedido realizado! 🎉')">Confirmar Pedido</button>
+  </div>
+</div>
+
+
+<!-- 1. INICIO -->
+<div id="inicio" class="portada">
+  <h1 class="titulo">Buffet Digital</h1>
+  <p class="subtitulo" style="border:none; padding:0; display:block;">Tus platos favoritos listos para ordenar</p>
+  <button class="boton" onclick="irACategorias()">Ver Menú</button>
+</div>
+
+<!-- 2. CATEGORÍAS -->
+<div id="categorias" class="seccion-categorias">
+  <h1>¿Qué se te antoja hoy?</h1>
+  <p style="color:#666666; justify-content:center; border:none; margin-bottom:10px; font-weight:400; font-size:15px;">Selecciona una categoría para explorar opciones</p>
+  <div class="contenedor-grid">
+    <div class="tarjeta-categoria img-asiatico" onclick="mostrarPlatos('asiatico')"><span>🍜 Asiático</span></div>
+    <div class="tarjeta-categoria img-oriental" onclick="mostrarPlatos('oriental')"><span>🍛 Oriental</span></div>
+    <div class="tarjeta-categoria img-europeo" onclick="mostrarPlatos('europeo')"><span>🍝 Europeo</span></div>
+    <div class="tarjeta-categoria img-latino" onclick="mostrarPlatos('latino')"><span>🌮 Latinoamericano</span></div>
+    <div class="tarjeta-categoria img-rapido" onclick="mostrarPlatos('rapido')"><span>🍔 Rápido</span></div>
+    <div class="tarjeta-categoria img-vegetariano" onclick="mostrarPlatos('vegetariano')"><span>🥗 Vegetariano</span></div>
+    <div class="tarjeta-categoria img-vegano" onclick="mostrarPlatos('vegano')"><span>🌿 Vegano</span></div>
+    <div class="tarjeta-categoria img-vegano" onclick="mostrarPlatos('bebidas asiaticas')"><span>🍹  Bebidas Asiaticas</span></div>
+    <div class="tarjeta-categoria img-vegano" onclick="mostrarPlatos('bebidas europeas')"><span>🍹  Bebidas Europeas</span></div>
+    <div class="tarjeta-categoria img-vegano" onclick="mostrarPlatos('bebidas americanas')"><span>🍹  Bebidas Americanas</span></div>
+    <div class="tarjeta-categoria img-vegano" onclick="mostrarPlatos('bebidas gaseosas')"><span>🍹  Gaseosas</span></div>
+
+  </div>
+  <button class="boton" onclick="volverAlInicio()">Volver al Inicio</button>
+</div>
+
+<!-- 3. LISTADO DE PLATOS -->
+<div id="menu" class="menu">
+  <h1>Platos Disponibles</h1>
+
+  <div id="cat-asiatico" class="categoria">
+    <h2>🍜 MENÚ ASIÁTICO</h2>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Sushi roll clásico',28000)"><span class="nombre-plato">Sushi roll clásico</span><span class="precio-plato">$28.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Sushi tempura roll',32000)"><span class="nombre-plato">Sushi tempura roll</span><span class="precio-plato">$32.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Ramen de cerdo',30000)"><span class="nombre-plato">Ramen de cerdo</span><span class="precio-plato">$30.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Ramen vegetariano',26000)"><span class="nombre-plato">Ramen vegetariano</span><span class="precio-plato">$26.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Arroz frito con pollo',24000)"><span class="nombre-plato">Arroz frito con pollo</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Pad thai de camarones',35000)"><span class="nombre-plato">Pad thai de camarones</span><span class="precio-plato">$35.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Pad thai vegetariano',28000)"><span class="nombre-plato">Pad thai vegetariano</span><span class="precio-plato">$28.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Pollo agridulce',26000)"><span class="nombre-plato">Pollo agridulce</span><span class="precio-plato">$26.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Cerdo a la naranja',29000)"><span class="nombre-plato">Cerdo a la naranja</span><span class="precio-plato">$29.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Dumplings al vapor',22000)"><span class="nombre-plato">Dumplings al vapor</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Rollos primavera',18000)"><span class="nombre-plato">Rollos primavera</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Bibimbap coreano',31000)"><span class="nombre-plato">Bibimbap coreano</span><span class="precio-plato">$31.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Pollo teriyaki',27000)"><span class="nombre-plato">Pollo teriyaki</span><span class="precio-plato">$27.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('asiatico','Curry tailandés con pollo',33000)"><span class="nombre-plato">Curry tailandés con pollo</span><span class="precio-plato">$33.000 <span class="icono-ver">›</span></span></div>
+  </div>
+
+  <div id="cat-oriental" class="categoria">
+    <h2>🍛 MENÚ ORIENTAL</h2>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Hummus con pan pita',18000)"><span class="nombre-plato">Hummus con pan pita</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Falafel con ensalada',22000)"><span class="nombre-plato">Falafel con ensalada</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Shawarma de pollo',24000)"><span class="nombre-plato">Shawarma de pollo</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Kebab de cordero',32000)"><span class="nombre-plato">Kebab de cordero</span><span class="precio-plato">$32.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Pollo tikka masala',30000)"><span class="nombre-plato">Pollo tikka masala</span><span class="precio-plato">$30.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Shawarma mixto',27000)"><span class="nombre-plato">Shawarma mixto</span><span class="precio-plato">$27.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Arroz basmati especiado',16000)"><span class="nombre-plato">Arroz basmati especiado</span><span class="precio-plato">$16.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Curry de garbanzos',24000)"><span class="nombre-plato">Curry de garbanzos</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Samosas',18000)"><span class="nombre-plato">Samosas</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Pan naan con ajo',12000)"><span class="nombre-plato">Pan naan con ajo</span><span class="precio-plato">$12.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Ensalada tabulé',20000)"><span class="nombre-plato">Ensalada tabulé</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Baba ganoush',19000)"><span class="nombre-plato">Baba ganoush</span><span class="precio-plato">$19.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Cordero al curry',35000)"><span class="nombre-plato">Cordero al curry</span><span class="precio-plato">$35.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Arroz biryani de pollo',28000)"><span class="nombre-plato">Arroz biryani de pollo</span><span class="precio-plato">$28.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('oriental','Lentejas especiadas',21000)"><span class="nombre-plato">Lentejas especiadas</span><span class="precio-plato">$21.000 <span class="icono-ver">›</span></span></div>
+  </div>
+
+  <div id="cat-europeo" class="categoria">
+    <h2>🍝 MENÚ EUROPEO</h2>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Pasta carbonara',28000)"><span class="nombre-plato">Pasta carbonara</span><span class="precio-plato">$28.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Pasta boloñesa',26000)"><span class="nombre-plato">Pasta boloñesa</span><span class="precio-plato">$26.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Lasaña tradicional',30000)"><span class="nombre-plato">Lasaña tradicional</span><span class="precio-plato">$30.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Pizza pepperoni',28000)"><span class="nombre-plato">Pizza pepperoni</span><span class="precio-plato">$28.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Paella mixta',40000)"><span class="nombre-plato">Paella mixta</span><span class="precio-plato">$40.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Risotto de champiñones',29000)"><span class="nombre-plato">Risotto de champiñones</span><span class="precio-plato">$29.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Pollo al vino',32000)"><span class="nombre-plato">Pollo al vino</span><span class="precio-plato">$32.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Filete a la pimienta',38000)"><span class="nombre-plato">Filete a la pimienta</span><span class="precio-plato">$38.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Pizza margarita',24000)"><span class="nombre-plato">Pizza margarita</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Tortilla española',22000)"><span class="nombre-plato">Tortilla española</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Croquetas de jamón',20000)"><span class="nombre-plato">Croquetas de jamón</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Schnitzel alemán',34000)"><span class="nombre-plato">Schnitzel alemán</span><span class="precio-plato">$34.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Salmón al horno',42000)"><span class="nombre-plato">Salmón al horno</span><span class="precio-plato">$42.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Ensalada caprese',21000)"><span class="nombre-plato">Ensalada caprese</span><span class="precio-plato">$21.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('europeo','Crepes dulces',18000)"><span class="nombre-plato">Crepes dulces</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+  </div>
+
+  <div id="cat-latino" class="categoria">
+    <h2>🌮 MENÚ LATINOAMERICANO</h2>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Bandeja paisa',35000)"><span class="nombre-plato">Bandeja paisa</span><span class="precio-plato">$35.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Tacos al pastor',22000)"><span class="nombre-plato">Tacos al pastor</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Burrito de pollo',24000)"><span class="nombre-plato">Burrito de pollo</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Ceviche peruano',32000)"><span class="nombre-plato">Ceviche peruano</span><span class="precio-plato">$32.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Churrasco',38000)"><span class="nombre-plato">Churrasco</span><span class="precio-plato">$38.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Arepa con queso',12000)"><span class="nombre-plato">Arepa con queso</span><span class="precio-plato">$12.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Arepa con carne',18000)"><span class="nombre-plato">Arepa con carne</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Quesadilla mixta',23000)"><span class="nombre-plato">Quesadilla mixta</span><span class="precio-plato">$23.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Lomo saltado',34000)"><span class="nombre-plato">Lomo saltado</span><span class="precio-plato">$34.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Empanadas colombianas',15000)"><span class="nombre-plato">Empanadas colombianas</span><span class="precio-plato">$15.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Sancocho',28000)"><span class="nombre-plato">Sancocho</span><span class="precio-plato">$28.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Arroz con pollo',20000)"><span class="nombre-plato">Arroz con pollo</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Patacones con hogao',16000)"><span class="nombre-plato">Patacones con hogao</span><span class="precio-plato">$16.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Tamal',18000)"><span class="nombre-plato">Tamal</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('latino','Enchiladas',26000)"><span class="nombre-plato">Enchiladas</span><span class="precio-plato">$26.000 <span class="icono-ver">›</span></span></div>
+  </div>
+
+  <div id="cat-rapido" class="categoria">
+    <h2>🍔 MENÚ RÁPIDO</h2>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Hamburguesa clásica',22000)"><span class="nombre-plato">Hamburguesa clásica</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Hamburguesa doble carne',30000)"><span class="nombre-plato">Hamburguesa doble carne</span><span class="precio-plato">$30.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Hamburguesa BBQ',28000)"><span class="nombre-plato">Hamburguesa BBQ</span><span class="precio-plato">$28.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Hot dog especial',18000)"><span class="nombre-plato">Hot dog especial</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Costillas BBQ',38000)"><span class="nombre-plato">Costillas BBQ</span><span class="precio-plato">$38.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Alitas picantes',24000)"><span class="nombre-plato">Alitas picantes</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Nuggets de pollo',20000)"><span class="nombre-plato">Nuggets de pollo</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Papas fritas',10000)"><span class="nombre-plato">Papas fritas</span><span class="precio-plato">$10.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Papas con queso y tocineta',18000)"><span class="nombre-plato">Papas con queso y tocineta</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Sándwich club',22000)"><span class="nombre-plato">Sándwich club</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Mac & cheese',19000)"><span class="nombre-plato">Mac & cheese</span><span class="precio-plato">$19.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Pollo frito',26000)"><span class="nombre-plato">Pollo frito</span><span class="precio-plato">$26.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Wrap de pollo',21000)"><span class="nombre-plato">Wrap de pollo</span><span class="precio-plato">$21.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Ensalada César con pollo',24000)"><span class="nombre-plato">Ensalada César con pollo</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('rapido','Malteada',14000)"><span class="nombre-plato">Malteada</span><span class="precio-plato">$14.000 <span class="icono-ver">›</span></span></div>
+  </div>
+
+  <div id="cat-vegetariano" class="categoria">
+    <h2>🥗 MENÚ VEGETARIANO</h2>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Ensalada César vegetariana',20000)"><span class="nombre-plato">Ensalada César vegetariana</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Pasta primavera',24000)"><span class="nombre-plato">Pasta primavera</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Pizza vegetariana',25000)"><span class="nombre-plato">Pizza vegetariana</span><span class="precio-plato">$25.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Lasaña de verduras',26000)"><span class="nombre-plato">Lasaña de verduras</span><span class="precio-plato">$26.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Hamburguesa veggie',22000)"><span class="nombre-plato">Hamburguesa veggie</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Wrap de vegetales',20000)"><span class="nombre-plato">Wrap de vegetales</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Arroz salteado vegetal',21000)"><span class="nombre-plato">Arroz salteado vegetal</span><span class="precio-plato">$21.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Tacos vegetarianos',19000)"><span class="nombre-plato">Tacos vegetarianos</span><span class="precio-plato">$19.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Quesadillas de vegetales',21000)"><span class="nombre-plato">Quesadillas de vegetales</span><span class="precio-plato">$21.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Risotto de espinaca',25000)"><span class="nombre-plato">Risotto de espinaca</span><span class="precio-plato">$25.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Arepa con aguacate',14000)"><span class="nombre-plato">Arepa con aguacate</span><span class="precio-plato">$14.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Ensalada griega',22000)"><span class="nombre-plato">Ensalada griega</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Crema de verduras',18000)"><span class="nombre-plato">Crema de verduras</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Champiñones al ajillo',20000)"><span class="nombre-plato">Champiñones al ajillo</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegetariano','Tortilla de vegetales',19000)"><span class="nombre-plato">Tortilla de vegetales</span><span class="precio-plato">$19.000 <span class="icono-ver">›</span></span></div>
+  </div>
+
+  <div id="cat-vegano" class="categoria">
+    <h2>🌿 MENÚ VEGANO</h2>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Hamburguesa vegana',24000)"><span class="nombre-plato">Hamburguesa vegana</span><span class="precio-plato">$24.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Pizza vegana',27000)"><span class="nombre-plato">Pizza vegana</span><span class="precio-plato">$27.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Bowl vegano',26000)"><span class="nombre-plato">Bowl vegano</span><span class="precio-plato">$26.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Curry vegano',25000)"><span class="nombre-plato">Curry vegano</span><span class="precio-plato">$25.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Tacos veganos',20000)"><span class="nombre-plato">Tacos veganos</span><span class="precio-plato">$20.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Wrap vegano',22000)"><span class="nombre-plato">Wrap vegano</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Ensalada vegana especial',21000)"><span class="nombre-plato">Ensalada vegana especial</span><span class="precio-plato">$21.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Lentejas guisadas',18000)"><span class="nombre-plato">Lentejas guisadas</span><span class="precio-plato">$18.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Arroz con vegetales',19000)"><span class="nombre-plato">Arroz con vegetales</span><span class="precio-plato">$19.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Pasta vegana',23000)"><span class="nombre-plato">Pasta vegana</span><span class="precio-plato">$23.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Falafel vegano',22000)"><span class="nombre-plato">Falafel vegano</span><span class="precio-plato">$22.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Sopa de verduras',16000)"><span class="nombre-plato">Sopa de verduras</span><span class="precio-plato">$16.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Arepa vegana',15000)"><span class="nombre-plato">Arepa vegana</span><span class="precio-plato">$15.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Nuggets veganos',23000)"><span class="nombre-plato">Nuggets veganos</span><span class="precio-plato">$23.000 <span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('vegano','Postre vegano',14000)"><span class="nombre-plato">Postre vegano</span><span class="precio-plato">$14.000 <span class="icono-ver">›</span></span></div>
+  </div>
+
+  <div id="cat-bebidas asiaticas" class="categoria">
+    <h2>🌿 MENÚ BEBIDA ASIATICAS</h2>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Bubble Tea', 14.000)"><span class="nombre-plato">Bubble Tea</span><span class="precio-plato">$14.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Matcha Latte', 13.000)"><span class="nombre-plato">Matcha Latte</span><span class="precio-plato">$13.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Sake', 22.000 )"><span class="nombre-plato">Sake</span><span class="precio-plato">$22.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Soju', 20.000 )"><span class="nombre-plato">Soju</span><span class="precio-plato">$20.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Makgeolli', 18.000)"><span class="nombre-plato">Makgeolli</span><span class="precio-plato">$18.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Lassi', 14.000 )"><span class="nombre-plato">Sake</span><span class="precio-plato">$14.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Masala Chai', 12.000)"><span class="nombre-plato">Masala Chai</span><span class="precio-plato">$12.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Bandung', 13.000)"><span class="nombre-plato">Bandung</span><span class="precio-plato">$13.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Teh Tarik', 11.000 )"><span class="nombre-plato">Teh Tarik</span><span class="precio-plato">$11.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Thai Iced Tea', 14.000 )"><span class="nombre-plato">Thai Iced Tea</span><span class="precio-plato">$14.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Kombucha', 16.000)"><span class="nombre-plato">Kombucha</span><span class="precio-plato">$16.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Calamansi Juice', 12.000 )"><span class="nombre-plato">Calamansi Juice</span><span class="precio-plato">$12.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Yakult', 6.000 )"><span class="nombre-plato">Yakult</span><span class="precio-plato">$6.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Amazake', 15.000)"><span class="nombre-plato">Amazake</span><span class="precio-plato">$15.000<span class="icono-ver">›</span></span></div>
+    <div class="fila-plato" onclick="abrirDetalle('bebidas asiáticas','Sugarcane Juice', 10.000 )"><span class="nombre-plato">Sugarcane Juice</span><span class="precio-plato">$10.000<span class="icono-ver">›</span></span></div>
+  </div>
+
+  <br>
+  <button class="boton" onclick="volverACategorias()">Volver a Categorías</button>
+</div>
+
+
+<!-- 4. PANTALLA DE BÚSQUEDA -->
+<div id="pantallaBusqueda" class="pantalla-busqueda"></div>
+
+<!-- 5. PANTALLA DETALLE DEL PLATO -->
+<div id="detalleRender" class="pantalla-detalle"></div>
+
+<!-- BARRA INFERIOR AGREGAR AL CARRITO -->
+<div id="barraAgregar" class="barra-agregar">
+  <div class="control-cantidad">
+    <button class="btn-cantidad" onclick="cambiarCantidad(-1)">−</button>
+    <span class="txt-cantidad" id="txtCantidad">1</span>
+    <button class="btn-cantidad" onclick="cambiarCantidad(1)">+</button>
+  </div>
+  <button class="btn-agregar-carrito" onclick="agregarAlCarrito()">
+    <span>Agregar al carrito</span>
+    <span class="total-carrito" id="txtTotalBarra">$0</span>
+  </button>
+</div>
+
+
+<script>
+// ========== DATOS DE CATEGORÍAS ==========
+const datosCategoria = {
+  asiatico: {
+    emoji: "🍜",
+    imagen: "https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80",
+    descripcionBase: "Plato típico de la cocina asiática, preparado con ingredientes frescos y especias tradicionales.",
+    ingredientesBase: ["Salsa de soja", "Jengibre", "Ajo", "Aceite de sésamo", "Cebolla verde"],
+    extras: [
+      { nombre: "Salsa picante extra", desc: "Sriracha o chili oil", precio: 2000,  img: "https://images.unsplash.com/photo-1594280153399-b7b010bd8502?w=120&q=70" },
+      { nombre: "Arroz extra",         desc: "Porción adicional de arroz", precio: 3000, img: "https://images.unsplash.com/photo-1516684732162-798a0062be99?w=120&q=70" },
+      { nombre: "Tofu añadido",        desc: "Tofu firme salteado", precio: 4000,        img: "https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?w=120&q=70" },
+      { nombre: "Camarones extra",     desc: "5 camarones adicionales", precio: 6000,    img: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=120&q=70" },
+      { nombre: "Huevo frito",         desc: "Huevo frito sobre el plato", precio: 2500, img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=120&q=70" },
+      { nombre: "Edamame",             desc: "Porción de edamame con sal", precio: 3500, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=120&q=70" }
+    ]
+  },
+  oriental: {
+    emoji: "🍛",
+    imagen: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80",
+    descripcionBase: "Preparación auténtica de Oriente Medio con especias aromáticas y hierbas frescas.",
+    ingredientesBase: ["Cúrcuma", "Comino", "Cilantro", "Ajo", "Limón", "Aceite de oliva"],
+    extras: [
+      { nombre: "Pan naan extra",      desc: "Pieza adicional de naan", precio: 3000,     img: "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=120&q=70" },
+      { nombre: "Chutney de mango",    desc: "Salsa dulce y especiada", precio: 2500,     img: "https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?w=120&q=70" },
+      { nombre: "Yogur raita",         desc: "Yogur con pepino y menta", precio: 2000,    img: "https://images.unsplash.com/photo-1571167366136-b57e4b1a3c98?w=120&q=70" },
+      { nombre: "Garbanzos extra",     desc: "Porción adicional", precio: 3500,           img: "https://images.unsplash.com/photo-1515543237350-b3eea1ec8082?w=120&q=70" },
+      { nombre: "Queso paneer",        desc: "Cubos de queso fresco", precio: 5000,       img: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=120&q=70" },
+      { nombre: "Hummus adicional",    desc: "Porción de hummus casero", precio: 3000,    img: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=120&q=70" }
+    ]
+  },
+  europeo: {
+    emoji: "🍝",
+    imagen: "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=800&q=80",
+    descripcionBase: "Receta clásica de la cocina europea con productos de primera calidad y técnicas tradicionales.",
+    ingredientesBase: ["Aceite de oliva", "Albahaca", "Ajo", "Tomate", "Parmesano", "Sal y pimienta"],
+    extras: [
+      { nombre: "Queso parmesano",     desc: "Rallado generosamente", precio: 2500,       img: "https://images.unsplash.com/photo-1552767059-ce182ead6c1b?w=120&q=70" },
+      { nombre: "Pan ciabatta",        desc: "Dos rebanadas tostadas", precio: 3000,      img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=120&q=70" },
+      { nombre: "Trufa negra",         desc: "Láminas de trufa fresca", precio: 9000,     img: "https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=120&q=70" },
+      { nombre: "Prosciutto",          desc: "2 lonchas de jamón curado", precio: 5000,   img: "https://images.unsplash.com/photo-1613987549117-a55c5a18a60f?w=120&q=70" },
+      { nombre: "Vino de la casa",     desc: "Copa de vino tinto o blanco", precio: 8000, img: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=120&q=70" },
+      { nombre: "Salsa extra",         desc: "Porción adicional de salsa", precio: 2000,  img: "https://images.unsplash.com/photo-1465014925804-7b9ede58d0d7?w=120&q=70" }
+    ]
+  },
+  latino: {
+    emoji: "🌮",
+    imagen: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=800&q=80",
+    descripcionBase: "Sabores auténticos de Latinoamérica con ingredientes frescos y recetas de tradición familiar.",
+    ingredientesBase: ["Cilantro", "Limón", "Ají", "Tomate", "Cebolla", "Maíz"],
+    extras: [
+      { nombre: "Aguacate extra",      desc: "Medio aguacate cremoso", precio: 4000,      img: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=120&q=70" },
+      { nombre: "Arepa adicional",     desc: "Arepa de chócolo", precio: 3500,            img: "https://images.unsplash.com/photo-1599974579688-8dbdd335c77f?w=120&q=70" },
+      { nombre: "Chicharrón",          desc: "Porción de chicharrón crujiente", precio: 5000, img: "https://images.unsplash.com/photo-1544025162-d76694265947?w=120&q=70" },
+      { nombre: "Salsa picante",       desc: "Ají casero artesanal", precio: 1500,        img: "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?w=120&q=70" },
+      { nombre: "Hogao extra",         desc: "Guiso de tomate y cebolla", precio: 2000,   img: "https://images.unsplash.com/photo-1558818498-28c1e002b655?w=120&q=70" },
+      { nombre: "Patacones",           desc: "2 patacones con guacamole", precio: 4500,   img: "https://images.unsplash.com/photo-1615361200141-f45040f367be?w=120&q=70" }
+    ]
+  },
+  rapido: {
+    emoji: "🍔",
+    imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80",
+    descripcionBase: "El mejor comfort food, preparado al momento con ingredientes frescos y salsas caseras.",
+    ingredientesBase: ["Pan artesanal", "Lechuga", "Tomate", "Cebolla", "Salsas caseras"],
+    extras: [
+      { nombre: "Tocineta extra",      desc: "2 tiras de tocineta crocante", precio: 3500, img: "https://images.unsplash.com/photo-1541519227354-08fa5d50c820?w=120&q=70" },
+      { nombre: "Queso extra",         desc: "Cheddar o americano fundido", precio: 2500,  img: "https://images.unsplash.com/photo-1618164436241-4473940d1f5c?w=120&q=70" },
+      { nombre: "Papas fritas",        desc: "Porción mediana de papas", precio: 5000,     img: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=120&q=70" },
+      { nombre: "Carne extra",         desc: "Medallón adicional de carne", precio: 7000,  img: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=120&q=70" },
+      { nombre: "Aros de cebolla",     desc: "5 aros de cebolla apanados", precio: 4000,   img: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=120&q=70" },
+      { nombre: "Salsa BBQ",           desc: "Salsa BBQ ahumada casera", precio: 2000,     img: "https://images.unsplash.com/photo-1585325701165-0f9f8b7e4e36?w=120&q=70" }
+    ]
+  },
+  vegetariano: {
+    emoji: "🥗",
+    imagen: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80",
+    descripcionBase: "Opciones nutritivas y deliciosas sin carne, llenas de color, sabor y vitaminas.",
+    ingredientesBase: ["Verduras frescas de temporada", "Aceite de oliva", "Hierbas aromáticas", "Limón"],
+    extras: [
+      { nombre: "Aguacate extra",      desc: "Medio aguacate fresco", precio: 4000,        img: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=120&q=70" },
+      { nombre: "Queso feta",          desc: "Cubos de queso feta griego", precio: 3500,   img: "https://images.unsplash.com/photo-1559561853-08451507673f?w=120&q=70" },
+      { nombre: "Huevo pochado",       desc: "Huevo pochado sobre el plato", precio: 3000, img: "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=120&q=70" },
+      { nombre: "Semillas mixtas",     desc: "Chía, linaza y girasol", precio: 2000,       img: "https://images.unsplash.com/photo-1611601322175-ef8ec8c85f01?w=120&q=70" },
+      { nombre: "Aderezo extra",       desc: "Vinagreta de mostaza y miel", precio: 1500,  img: "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?w=120&q=70" },
+      { nombre: "Proteína vegetal",    desc: "Tofu o tempeh salteado", precio: 5000,       img: "https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?w=120&q=70" }
+    ]
+  },
+  vegano: {
+    emoji: "🌿",
+    imagen: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&q=80",
+    descripcionBase: "100% de origen vegetal, delicioso y sostenible. Sin ningún producto de origen animal.",
+    ingredientesBase: ["Plantas frescas", "Aceite de coco", "Levadura nutricional", "Especias naturales"],
+    extras: [
+      { nombre: "Aguacate extra",      desc: "Medio aguacate maduro", precio: 4000,        img: "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=120&q=70" },
+      { nombre: "Leche de coco",       desc: "Para cremosidad extra", precio: 2500,        img: "https://images.unsplash.com/photo-1561753757-d8880c5a3551?w=120&q=70" },
+      { nombre: "Semillas de cáñamo",  desc: "Proteína vegetal extra", precio: 3000,       img: "https://images.unsplash.com/photo-1611601322175-ef8ec8c85f01?w=120&q=70" },
+      { nombre: "Queso vegano",        desc: "Queso de anacardos", precio: 4500,           img: "https://images.unsplash.com/photo-1559561853-08451507673f?w=120&q=70" },
+      { nombre: "Tempeh extra",        desc: "Porción de tempeh marinado", precio: 5000,   img: "https://images.unsplash.com/photo-1546069901-d5bfd2cbfb1f?w=120&q=70" },
+      { nombre: "Aderezo tahini",      desc: "Salsa de ajonjolí y limón", precio: 2000,    img: "https://images.unsplash.com/photo-1577805947697-89e18249d767?w=120&q=70" }
+    ]
+  }
+};
+
+// ========== ESTADO GLOBAL ==========
+let platoActual = null;
+let categoriaActual = null;
+let cantidadActual = 1;
+let extrasSeleccionados = [];
+let carrito = [];
+
+// ========== NAVEGACIÓN ==========
+function irACategorias() {
+  ocultarTodo();
+  document.getElementById("categorias").style.display = "block";
+}
+function volverAlInicio() {
+  ocultarTodo();
+  document.getElementById("inicio").style.display = "flex";
+}
+function mostrarPlatos(cat) {
+  categoriaActual = cat;
+  ocultarTodo();
+  document.getElementById("menu").style.display = "block";
+  let listas = document.getElementsByClassName("categoria");
+  for (let i = 0; i < listas.length; i++) listas[i].style.display = "none";
+  document.getElementById("cat-" + cat).style.display = "block";
+}
+function volverACategorias() {
+  ocultarTodo();
+  document.getElementById("categorias").style.display = "block";
+}
+function ocultarTodo() {
+  document.getElementById("inicio").style.display = "none";
+  document.getElementById("categorias").style.display = "none";
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("detalleRender").style.display = "none";
+  document.getElementById("pantallaBusqueda").style.display = "none";
+  document.getElementById("barraAgregar").classList.remove("visible");
+}
+
+// ========== DETALLE DEL PLATO ==========
+function abrirDetalle(categoria, nombre, precio) {
+  const datos = datosCategoria[categoria];
+  platoActual = { nombre, precio, categoria };
+  cantidadActual = 1;
+  extrasSeleccionados = [];
+
+  const extrasHTML = datos.extras.map((e, i) => `
+    <div class="extra-item" onclick="toggleExtra(${i}, ${e.precio})" style="cursor:pointer;">
+      <div class="extra-izq">
+        <img class="extra-img" src="${e.img}" alt="${e.nombre}" onerror="this.style.background='#EEE';this.removeAttribute('src')">
+        <div class="extra-info">
+          <span class="extra-nombre">${e.nombre}</span>
+          <span class="extra-desc">${e.desc}</span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+        <span class="extra-precio">+$${e.precio.toLocaleString('es-CO')}</span>
+        <div class="extra-check" id="check-${i}"></div>
+      </div>
+    </div>
+  `).join('');
+
+  const tagsHTML = datos.ingredientesBase.map(ing =>
+    `<span class="tag-ingrediente">${ing}</span>`
+  ).join('');
+
+  document.getElementById("detalleRender").innerHTML = `
+    <button class="btn-volver-detalle" onclick="volverAlMenu()">← Volver al menú</button>
+    <img class="detalle-imagen" src="${datos.imagen}" alt="${nombre}" onerror="this.style.background='#EEEEEE'; this.removeAttribute('src')">
+    <div class="detalle-encabezado">
+      <h2 class="detalle-nombre">${datos.emoji} ${nombre}</h2>
+      <span class="detalle-precio-base">$${precio.toLocaleString('es-CO')}</span>
+    </div>
+    <p class="detalle-descripcion" style="display:block; border:none; padding:0; margin-bottom:24px;">${datos.descripcionBase}</p>
+
+    <div class="bloque-ingredientes">
+      <div class="bloque-titulo">🥄 Ingredientes incluidos</div>
+      <div class="tags-ingredientes">${tagsHTML}</div>
+    </div>
+
+    <div class="bloque-extras">
+      <div class="bloque-titulo" style="margin-bottom:4px;">✨ Personaliza tu plato</div>
+      <p style="border:none; padding:0; display:block; font-size:12px; color:#aaa; margin-bottom:14px;">Agrega ingredientes extra a tu pedido</p>
+      ${extrasHTML}
+    </div>
+  `;
+
+  ocultarTodo();
+  document.getElementById("detalleRender").style.display = "block";
+  document.getElementById("barraAgregar").classList.add("visible");
+  document.getElementById("txtCantidad").innerText = 1;
+  actualizarTotalBarra();
+  window.scrollTo(0, 0);
+}
+
+function volverAlMenu() {
+  document.getElementById("barraAgregar").classList.remove("visible");
+  mostrarPlatos(categoriaActual);
+}
+
+function toggleExtra(idx, precio) {
+  const check = document.getElementById("check-" + idx);
+  const pos = extrasSeleccionados.findIndex(e => e.idx === idx);
+  if (pos === -1) {
+    extrasSeleccionados.push({ idx, precio, nombre: datosCategoria[platoActual.categoria].extras[idx].nombre });
+    check.classList.add("activo");
+  } else {
+    extrasSeleccionados.splice(pos, 1);
+    check.classList.remove("activo");
+  }
+  actualizarTotalBarra();
+}
+
+function calcularTotal() {
+  const sumExtras = extrasSeleccionados.reduce((acc, e) => acc + e.precio, 0);
+  return (platoActual.precio + sumExtras) * cantidadActual;
+}
+
+function actualizarTotalBarra() {
+  const total = calcularTotal();
+  document.getElementById("txtTotalBarra").innerText = "$" + total.toLocaleString('es-CO');
+}
+
+function cambiarCantidad(delta) {
+  cantidadActual = Math.max(1, cantidadActual + delta);
+  document.getElementById("txtCantidad").innerText = cantidadActual;
+  actualizarTotalBarra();
+}
+
+function agregarAlCarrito() {
+  const sumExtras = extrasSeleccionados.reduce((acc, e) => acc + e.precio, 0);
+  const item = {
+    nombre: platoActual.nombre,
+    precioBase: platoActual.precio,
+    extras: [...extrasSeleccionados],
+    cantidad: cantidadActual,
+    total: calcularTotal()
+  };
+  carrito.push(item);
+  actualizarBotonCarrito();
+  document.getElementById("barraAgregar").classList.remove("visible");
+  mostrarPlatos(categoriaActual);
+
+  // Feedback visual
+  const btn = document.querySelector(".boton-carrito");
+  btn.style.background = "#FF0000";
+  btn.style.color = "white";
+  btn.style.borderColor = "#FF0000";
+  setTimeout(() => {
+    btn.style.background = "";
+    btn.style.color = "";
+    btn.style.borderColor = "";
+  }, 1200);
+}
+
+function actualizarBotonCarrito() {
+  const totalItems = carrito.reduce((acc, i) => acc + i.cantidad, 0);
+  document.getElementById("txtCarrito").innerText = "Carrito (" + totalItems + ")";
+}
+
+function verCarrito() {
+  if (carrito.length === 0) {
+    alert("Tu carrito está vacío.");
+    return;
+  }
+  let html = "";
+  let totalGlobal = 0;
+  carrito.forEach((item, i) => {
+    const extrasStr = item.extras.length > 0
+      ? item.extras.map(e => e.nombre).join(", ")
+      : "Sin extras";
+    html += `
+      <div style="padding: 12px 0; border-bottom: 1px solid #F3F3F3;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <strong style="font-size:14px;">${item.nombre}</strong>
+          <span style="font-weight:700; color:#FF0000; white-space:nowrap; margin-left:8px;">$${item.total.toLocaleString('es-CO')}</span>
+        </div>
+        <div style="font-size:12px; color:#999; margin-top:4px;">Cantidad: ${item.cantidad} · ${extrasStr}</div>
+        <span onclick="eliminarDelCarrito(${i})" style="font-size:12px; color:#FF0000; cursor:pointer; font-weight:600;">Eliminar</span>
+      </div>`;
+    totalGlobal += item.total;
+  });
+  document.getElementById("listaCarrito").innerHTML = html;
+  document.getElementById("totalCarritoFinal").innerText = "Total: $" + totalGlobal.toLocaleString('es-CO');
+  abrirModal("modalCarrito");
+}
+
+function eliminarDelCarrito(idx) {
+  carrito.splice(idx, 1);
+  actualizarBotonCarrito();
+  verCarrito();
+  if (carrito.length === 0) cerrarModal("modalCarrito");
+}
+
+// ========== BÚSQUEDA ==========
+
+// Índice completo de categorías y platos
+const indiceCategorias = [
+  { id: 'asiatico',    label: '🍜 Asiático',        imagen: 'https://images.unsplash.com/photo-1553621042-f6e147245754?w=200&q=60', platos: 14 },
+  { id: 'oriental',   label: '🍛 Oriental',         imagen: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&q=60', platos: 15 },
+  { id: 'europeo',    label: '🍝 Europeo',          imagen: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?w=200&q=60', platos: 15 },
+  { id: 'latino',     label: '🌮 Latinoamericano',  imagen: 'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?w=200&q=60', platos: 15 },
+  { id: 'rapido',     label: '🍔 Rápido',           imagen: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200&q=60', platos: 15 },
+  { id: 'vegetariano',label: '🥗 Vegetariano',      imagen: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&q=60', platos: 15 },
+  { id: 'vegano',     label: '🌿 Vegano',           imagen: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=200&q=60', platos: 15 },
+];
+
+const indicePlatos = [
+  // ASIÁTICO
+  { nombre: 'Sushi roll clásico', precio: 28000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Sushi tempura roll', precio: 32000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Ramen de cerdo', precio: 30000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Ramen vegetariano', precio: 26000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Arroz frito con pollo', precio: 24000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Pad thai de camarones', precio: 35000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Pad thai vegetariano', precio: 28000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Pollo agridulce', precio: 26000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Cerdo a la naranja', precio: 29000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Dumplings al vapor', precio: 22000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Rollos primavera', precio: 18000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Bibimbap coreano', precio: 31000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Pollo teriyaki', precio: 27000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  { nombre: 'Curry tailandés con pollo', precio: 33000, cat: 'asiatico', catLabel: '🍜 Asiático' },
+  // ORIENTAL
+  { nombre: 'Hummus con pan pita', precio: 18000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Falafel con ensalada', precio: 22000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Shawarma de pollo', precio: 24000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Kebab de cordero', precio: 32000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Pollo tikka masala', precio: 30000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Shawarma mixto', precio: 27000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Arroz basmati especiado', precio: 16000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Curry de garbanzos', precio: 24000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Samosas', precio: 18000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Pan naan con ajo', precio: 12000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Ensalada tabulé', precio: 20000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Baba ganoush', precio: 19000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Cordero al curry', precio: 35000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Arroz biryani de pollo', precio: 28000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  { nombre: 'Lentejas especiadas', precio: 21000, cat: 'oriental', catLabel: '🍛 Oriental' },
+  // EUROPEO
+  { nombre: 'Pasta carbonara', precio: 28000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Pasta boloñesa', precio: 26000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Lasaña tradicional', precio: 30000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Pizza pepperoni', precio: 28000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Paella mixta', precio: 40000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Risotto de champiñones', precio: 29000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Pollo al vino', precio: 32000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Filete a la pimienta', precio: 38000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Pizza margarita', precio: 24000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Tortilla española', precio: 22000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Croquetas de jamón', precio: 20000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Schnitzel alemán', precio: 34000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Salmón al horno', precio: 42000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Ensalada caprese', precio: 21000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  { nombre: 'Crepes dulces', precio: 18000, cat: 'europeo', catLabel: '🍝 Europeo' },
+  // LATINO
+  { nombre: 'Bandeja paisa', precio: 35000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Tacos al pastor', precio: 22000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Burrito de pollo', precio: 24000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Ceviche peruano', precio: 32000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Churrasco', precio: 38000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Arepa con queso', precio: 12000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Arepa con carne', precio: 18000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Quesadilla mixta', precio: 23000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Lomo saltado', precio: 34000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Empanadas colombianas', precio: 15000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Sancocho', precio: 28000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Arroz con pollo', precio: 20000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Patacones con hogao', precio: 16000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Tamal', precio: 18000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  { nombre: 'Enchiladas', precio: 26000, cat: 'latino', catLabel: '🌮 Latinoamericano' },
+  // RÁPIDO
+  { nombre: 'Hamburguesa clásica', precio: 22000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Hamburguesa doble carne', precio: 30000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Hamburguesa BBQ', precio: 28000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Hot dog especial', precio: 18000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Costillas BBQ', precio: 38000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Alitas picantes', precio: 24000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Nuggets de pollo', precio: 20000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Papas fritas', precio: 10000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Papas con queso y tocineta', precio: 18000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Sándwich club', precio: 22000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Mac & cheese', precio: 19000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Pollo frito', precio: 26000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Wrap de pollo', precio: 21000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Ensalada César con pollo', precio: 24000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  { nombre: 'Malteada', precio: 14000, cat: 'rapido', catLabel: '🍔 Rápido' },
+  // VEGETARIANO
+  { nombre: 'Ensalada César vegetariana', precio: 20000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Pasta primavera', precio: 24000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Pizza vegetariana', precio: 25000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Lasaña de verduras', precio: 26000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Hamburguesa veggie', precio: 22000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Wrap de vegetales', precio: 20000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Arroz salteado vegetal', precio: 21000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Tacos vegetarianos', precio: 19000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Quesadillas de vegetales', precio: 21000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Risotto de espinaca', precio: 25000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Arepa con aguacate', precio: 14000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Ensalada griega', precio: 22000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Crema de verduras', precio: 18000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Champiñones al ajillo', precio: 20000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  { nombre: 'Tortilla de vegetales', precio: 19000, cat: 'vegetariano', catLabel: '🥗 Vegetariano' },
+  // VEGANO
+  { nombre: 'Hamburguesa vegana', precio: 24000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Pizza vegana', precio: 27000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Bowl vegano', precio: 26000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Curry vegano', precio: 25000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Tacos veganos', precio: 20000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Wrap vegano', precio: 22000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Ensalada vegana especial', precio: 21000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Lentejas guisadas', precio: 18000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Arroz con vegetales', precio: 19000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Pasta vegana', precio: 23000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Falafel vegano', precio: 22000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Sopa de verduras', precio: 16000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Arepa vegana', precio: 15000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Nuggets veganos', precio: 23000, cat: 'vegano', catLabel: '🌿 Vegano' },
+  { nombre: 'Postre vegano', precio: 14000, cat: 'vegano', catLabel: '🌿 Vegano' },
+];
+
+function normalizar(str) {
+  return str.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[&]/g, "y");
+}
+
+function resaltar(texto, query) {
+  if (!query) return texto;
+  const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+  return texto.replace(regex, '<mark>$1</mark>');
+}
+
+let timeoutBusqueda = null;
+
+function buscar(query) {
+  query = query.trim();
+
+  // Si el buscador se vacía, volver a la pantalla anterior
+  if (!query) {
+    ocultarTodo();
+    document.getElementById("inicio").style.display = "flex";
+    return;
+  }
+
+  // Debounce leve para no procesar cada tecla individualmente
+  clearTimeout(timeoutBusqueda);
+  timeoutBusqueda = setTimeout(() => ejecutarBusqueda(query), 120);
+}
+
+function ejecutarBusqueda(query) {
+  const q = normalizar(query);
+
+  // Filtrar categorías
+  const catsFiltradas = indiceCategorias.filter(c =>
+    normalizar(c.label).includes(q)
+  );
+
+  // Filtrar platos
+  const platosFiltrados = indicePlatos.filter(p =>
+    normalizar(p.nombre).includes(q) || normalizar(p.catLabel).includes(q)
+  );
+
+  const total = catsFiltradas.length + platosFiltrados.length;
+
+  let html = `
+    <div class="busqueda-header">
+      <h2 class="busqueda-titulo">Resultados de búsqueda</h2>
+      <p class="busqueda-subtitulo" style="display:block; border:none; padding:0;">
+        ${total > 0 ? `<strong>${total}</strong> resultado${total !== 1 ? 's' : ''} para` : 'Sin resultados para'}
+        <span class="busqueda-query">"${query}"</span>
+      </p>
+    </div>`;
+
+  if (total === 0) {
+    html += `
+      <div class="sin-resultados">
+        <div class="emoji-vacio">🔍</div>
+        <p><strong>No encontramos nada con ese nombre.</strong></p>
+        <p style="margin-top:8px;">Intenta con: pollo, pizza, arroz, vegano...</p>
+      </div>`;
+  } else {
+    // Sección categorías
+    if (catsFiltradas.length > 0) {
+      html += `<div class="seccion-resultado">
+        <div class="seccion-resultado-titulo">📂 Categorías (${catsFiltradas.length})</div>`;
+      catsFiltradas.forEach(c => {
+        html += `
+          <div class="resultado-categoria" onclick="irACategoriaDesdeBusqueda('${c.id}')">
+            <img class="resultado-cat-imagen" src="${c.imagen}" alt="${c.label}" onerror="this.style.background='#EEE';this.removeAttribute('src')">
+            <div class="resultado-cat-info">
+              <div class="resultado-cat-nombre">${resaltar(c.label, query)}</div>
+              <div class="resultado-cat-sub">${c.platos} platos disponibles</div>
+            </div>
+            <span class="resultado-cat-flecha">›</span>
+          </div>`;
+      });
+      html += `</div>`;
+    }
+
+    // Sección platos
+    if (platosFiltrados.length > 0) {
+      html += `<div class="seccion-resultado">
+        <div class="seccion-resultado-titulo">🍽️ Platos (${platosFiltrados.length})</div>`;
+      platosFiltrados.forEach(p => {
+        html += `
+          <div class="resultado-plato" onclick="irAPlatoDesdeBusqueda('${p.cat}', '${p.nombre.replace(/'/g, "\\'")}', ${p.precio})">
+            <div class="resultado-plato-izq">
+              <span class="resultado-plato-nombre">${resaltar(p.nombre, query)}</span>
+              <span class="resultado-plato-cat">${p.catLabel}</span>
+            </div>
+            <span class="resultado-plato-precio">$${p.precio.toLocaleString('es-CO')}</span>
+          </div>`;
+      });
+      html += `</div>`;
+    }
+  }
+
+  ocultarTodo();
+  const pantalla = document.getElementById("pantallaBusqueda");
+  pantalla.innerHTML = html;
+  pantalla.style.display = "block";
+  window.scrollTo(0, 0);
+}
+
+function irACategoriaDesdeBusqueda(cat) {
+  document.getElementById("inputBuscador").value = "";
+  mostrarPlatos(cat);
+}
+
+function irAPlatoDesdeBusqueda(cat, nombre, precio) {
+  document.getElementById("inputBuscador").value = "";
+  categoriaActual = cat;
+  abrirDetalle(cat, nombre, precio);
+}
+
+// ========== UBICACIÓN ==========
+function guardarUbicacion() {
+  const ciudad = document.getElementById("inputCiudad").value.trim();
+  const direccion = document.getElementById("inputDireccion").value.trim();
+  if (!ciudad || !direccion) { alert("Por favor ingresa tanto la ciudad como tu dirección exacta."); return; }
+  document.getElementById("txtUbicacion").innerText = ciudad + " - " + direccion.split(",")[0];
+  cerrarModal("modalUbicacion");
+}
+
+// ========== AUTH ==========
+window.onload = function() { verificarSesion(); };
+
+function gestionarClicAuth() {
+  const usuarioActivo = JSON.parse(localStorage.getItem("usuarioSesion"));
+  if (usuarioActivo) {
+    document.getElementById("dropdownUsuario").classList.toggle("mostrar");
+  } else {
+    abrirModal("modalAuth");
+    cambiarVistaAuth('login');
+  }
+}
+
+window.onclick = function(event) {
+  if (!event.target.matches('#btnAuthTrigger')) {
+    let dropdowns = document.getElementsByClassName("dropdown-contenido");
+    for (let i = 0; i < dropdowns.length; i++) {
+      if (dropdowns[i].classList.contains('mostrar')) dropdowns[i].classList.remove('mostrar');
+    }
+  }
+}
+
+function abrirModal(id) { document.getElementById(id).style.display = "block"; }
+function cerrarModal(id) { document.getElementById(id).style.display = "none"; }
+
+function cambiarVistaAuth(vista) {
+  document.getElementById("vistaLogin").style.display = vista === 'login' ? "block" : "none";
+  document.getElementById("vistaRegistro").style.display = vista === 'registro' ? "block" : "none";
+}
+
+function procesarRegistro() {
+  const nombre = document.getElementById("regNombre").value.trim();
+  const correo = document.getElementById("regCorreo").value.trim().toLowerCase();
+  const pass = document.getElementById("regPass").value;
+  if (!nombre || !correo || !pass) { alert("Por favor, llena todos los campos."); return; }
+  localStorage.setItem(correo, JSON.stringify({ nombre, correo, contrasena: pass }));
+  alert("¡Cuenta creada! Ya puedes ingresar.");
+  cambiarVistaAuth('login');
+}
+
+function procesarLogin() {
+  const correo = document.getElementById("loginCorreo").value.trim().toLowerCase();
+  const pass = document.getElementById("loginPass").value;
+  const usuario = JSON.parse(localStorage.getItem(correo));
+  if (usuario && usuario.contrasena === pass) {
+    localStorage.setItem("usuarioSesion", JSON.stringify(usuario));
+    cerrarModal("modalAuth");
+    verificarSesion();
+    alert("¡Hola, " + usuario.nombre + "!");
+  } else {
+    alert("Los datos ingresados no coinciden.");
+  }
+}
+
+function verificarSesion() {
+  const u = JSON.parse(localStorage.getItem("usuarioSesion"));
+  document.getElementById("btnAuthTrigger").innerHTML = u
+    ? "Mi Cuenta (" + u.nombre.split(" ")[0] + ") ▾"
+    : "Ingresar 👤";
+}
+
+function abrirPerfil() {
+  const u = JSON.parse(localStorage.getItem("usuarioSesion"));
+  if (u) {
+    document.getElementById("perfilNombre").innerText = u.nombre;
+    document.getElementById("perfilCorreo").innerText = u.correo;
+    abrirModal("modalPerfil");
+  }
+}
+
+function cerrarSesion() {
+  localStorage.removeItem("usuarioSesion");
+  verificarSesion();
+  alert("Sesión cerrada.");
+}
+</script>
+</body>
+</html>
